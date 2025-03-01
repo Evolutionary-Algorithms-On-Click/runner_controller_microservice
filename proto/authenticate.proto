@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package proto;
+option go_package = "/proto";
+
+// Authenticate service provides the Authenticate method.
+service Authenticate {
+    // Authenticate validates the token and returns the user information.
+    rpc Auth(TokenValidateRequest) returns (TokenValidateResponse) {};
+}
+
+// TokenValidateRequest is the request message for the Authenticate method.
+message TokenValidateRequest {
+    string token = 1;
+}
+
+// TokenValidateResponse is the response message for the Authenticate method.
+message TokenValidateResponse {
+    bool valid = 1;
+    string id = 2;
+    string role = 3;
+    string email = 4;
+    string userName = 5;
+    string fullName = 6;
+}

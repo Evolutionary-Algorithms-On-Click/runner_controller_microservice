@@ -1,5 +1,6 @@
 package config
 
 const (
-	PORT = ":5000"
+	PORT              = ":5002"
+	AUTH_GRPC_ADDRESS = "localhost:5001"
 )

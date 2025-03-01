@@ -3,6 +3,7 @@ package controller
 import (
 	"evolve/modules"
 	"evolve/util"
+	"fmt"
 	"net/http"
 	"os"
 )
@@ -11,7 +12,15 @@ func CreateGP(res http.ResponseWriter, req *http.Request) {
 	var logger = util.NewLogger()
 	logger.Info("CreateGP API called.")
 
-	// TODO: Add Auth.
+	// Comment this out to test the API without authentication.
+	user, err := modules.Auth(req)
+	if err != nil {
+		util.JSONResponse(res, http.StatusUnauthorized, err.Error(), nil)
+		return
+	}
+
+	// User has id, role, userName, email & fullName.
+	logger.Info(fmt.Sprintf("User: %s", user))
 
 	data, err := util.Body(req)
 	if err != nil {
