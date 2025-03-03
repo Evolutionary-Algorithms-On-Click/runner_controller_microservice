@@ -3,18 +3,32 @@ Go implementation of the Runner Controller.
 
 ## Setup
 
-1. Install Go
-2. Install the protobuf-grpc compiler.
+### Prerequisites
+
+1. GoLang - Install GoLang.
+2. MinIO - Start a MinIO server instance.
+3. CockroachDB - Start a CockroachDB instance.
+
+### Installation
+
+1. Install the protobuf-grpc compiler.
 ```sh
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 export PATH="$PATH:$(go env GOPATH)/bin"
 ```
-4. Run the following command to start the server.
+2. Export the following environment variables.
+```sh
+export DATABASE_URL=<cockroachdb_url>
+export MINIO_ENDPOINT=<minio_endpoint>
+export MINIO_ACCESS_KEY_ID=<minio_access_key>
+export MINIO_SECRET_KEY=<minio_secret_key>
+```
+3. Run the following command to start the server.
 ```sh
 go run main.go
 ```
 
-# Editing .proto files
+### Editing `.proto` files
 
 1. Install protoc compiler
 2. Run the following command to generate the go files from the proto files.
