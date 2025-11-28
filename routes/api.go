@@ -11,6 +11,7 @@ const (
 	GP        = BASE + "/gp"
 	ML        = BASE + "/ml"
 	PSO       = BASE + "/pso"
+	BO        = BASE + "/bo"
 	RUNS      = BASE + "/runs"
 	SHARE_RUN = RUNS + "/share"
 	RUN       = RUNS + "/run"
