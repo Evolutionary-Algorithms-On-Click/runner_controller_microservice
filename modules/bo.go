@@ -92,7 +92,7 @@ func (bo *BO) validate() error {
 	}
 
 	// Validate surrogate
-	if !slices.Contains([]string{"gp", "rf"}, bo.Surrogate) {
+	if !slices.Contains([]string{"gp", "rf", "et", "gbrt"}, bo.Surrogate) {
 		return fmt.Errorf("invalid surrogate model: %s", bo.Surrogate)
 	}
 
@@ -350,12 +350,22 @@ func (bo *BO) mainFunction() string {
 
 	// Base estimator and optimizer
 	code.WriteString("\n    # Surrogate model\n")
-	if bo.Surrogate == "gp" {
+
+	surrogate := strings.ToLower(bo.Surrogate)
+
+	switch surrogate {
+	case "gp":
 		code.WriteString("    base_estimator = GaussianProcessRegressor(kernel=kernel, normalize_y=True, n_restarts_optimizer=5)\n")
 		code.WriteString("    optimizer_callable = gp_minimize\n")
-	} else {
+
+	case "rf":
 		code.WriteString("    base_estimator = 'RF'\n")
 		code.WriteString("    optimizer_callable = forest_minimize\n")
+
+	case "et":
+		code.WriteString("    base_estimator = 'ET'\n")
+		code.WriteString("    optimizer_callable = forest_minimize\n")
+
 	}
 
 	// Print configuration if verbose
@@ -378,11 +388,16 @@ func (bo *BO) mainFunction() string {
 			code.WriteString(" (kappa={kappa})")
 		}
 		code.WriteString("')\n")
-		if bo.Surrogate == "gp" {
-			code.WriteString("    print(f'Kernel: {kernel}')\n")
-		} else {
-			code.WriteString("    print(f'Surrogate: Random Forest')\n")
-		}
+		code.WriteString("    surrogate_map = {\n")
+		code.WriteString("        'gp': 'Gaussian Process',\n")
+		code.WriteString("        'rf': 'Random Forest',\n")
+		code.WriteString("        'et': 'Extra Trees',\n")
+		code.WriteString("    }\n")
+		code.WriteString("    surrogate_name = surrogate_map['" + bo.Surrogate + "']\n")
+		code.WriteString("    if '" + bo.Surrogate + "' == 'gp':\n")
+		code.WriteString("        print(f\"Surrogate: {surrogate_name} (Kernel: {kernel})\")\n")
+		code.WriteString("    else:\n")
+		code.WriteString("        print(f\"Surrogate: {surrogate_name}\")\n")
 		code.WriteString("    print('='*80 + '\\n')\n")
 	}
 
@@ -470,10 +485,9 @@ func (bo *BO) mainFunction() string {
 			code.WriteString(" (kappa={kappa})")
 		}
 		code.WriteString("\\n')\n")
+		code.WriteString("        f.write(f'Surrogate: {surrogate_map[\"" + bo.Surrogate + "\"]}\\n')\n")
 		if bo.Surrogate == "gp" {
 			code.WriteString("        f.write(f'Kernel: {kernel}\\n')\n")
-		} else {
-			code.WriteString("        f.write(f'Surrogate: Random Forest\\n')\n")
 		}
 		code.WriteString("        f.write('='*80 + '\\n\\n')\n")
 		code.WriteString("        \n")
