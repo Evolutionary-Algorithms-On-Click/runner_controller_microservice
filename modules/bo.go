@@ -153,6 +153,14 @@ func (bo *BO) validate() error {
 		return fmt.Errorf("iterations must be at least 1")
 	}
 
+	// Ensure Iterations > InitialPoints
+	if bo.Params.Iterations <= bo.Params.InitialPoints {
+		return fmt.Errorf("iterations (%d) must be greater than initialPoints (%d)",
+			bo.Params.Iterations,
+			bo.Params.InitialPoints,
+		)
+	}
+
 	return nil
 }
 
