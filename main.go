@@ -55,6 +55,7 @@ func main() {
 	mux.HandleFunc(routes.ML, controller.CreateML)
 	mux.HandleFunc(routes.PSO, controller.CreatePSO)
 	mux.HandleFunc(routes.BO, controller.CreateBO)
+	mux.HandleFunc(routes.MOBO, controller.CreateMOBO)
 	mux.HandleFunc(routes.RUNS, controller.UserRuns)
 	mux.HandleFunc(routes.SHARE_RUN, controller.ShareRun)
 	mux.HandleFunc(routes.RUN, controller.UserRun)

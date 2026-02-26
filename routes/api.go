@@ -12,6 +12,7 @@ const (
 	ML        = BASE + "/ml"
 	PSO       = BASE + "/pso"
 	BO        = BASE + "/bo"
+	MOBO      = BASE + "/mobo"
 	RUNS      = BASE + "/runs"
 	SHARE_RUN = RUNS + "/share"
 	RUN       = RUNS + "/run"

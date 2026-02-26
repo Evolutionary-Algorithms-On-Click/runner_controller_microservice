@@ -173,7 +173,6 @@ func (bo *BO) imports() string {
 		"import time",
 		"import numpy as np",
 		"import matplotlib.pyplot as plt",
-		"import matplotlib.animation as animation",
 		"from skopt import gp_minimize, forest_minimize",
 		"from skopt.space import Real",
 		"from skopt.space import Space",
@@ -529,15 +528,15 @@ func (bo *BO) mainFunction() string {
 		code.WriteString("        f.write('='*80 + '\\n')\n\n")
 	}
 
-	// Save convergence animation
-	code.WriteString("    # Create convergence animation\n")
+	// Save convergence plot as static PNG
+	code.WriteString("    # Create convergence plot\n")
 	code.WriteString("    ys = np.array(res.func_vals)\n")
 	code.WriteString("    if direction == 'maximize':\n")
 	code.WriteString("        ys = -ys\n")
 	code.WriteString("    best_vals = np.minimum.accumulate(ys) if direction == 'minimize' else np.maximum.accumulate(ys)\n")
 	code.WriteString("    \n")
 	code.WriteString("    fig, ax = plt.subplots(figsize=(8, 5))\n")
-	code.WriteString("    line, = ax.plot([], [], 'o-', linewidth=2, markersize=4, color='#2E86AB')\n")
+	code.WriteString("    ax.plot(range(1, len(best_vals) + 1), best_vals, 'o-', linewidth=2, markersize=4, color='#2E86AB')\n")
 	code.WriteString("    \n")
 	code.WriteString("    # Dynamic axis limits with proper padding\n")
 	code.WriteString("    y_range = max(best_vals) - min(best_vals)\n")
@@ -550,12 +549,8 @@ func (bo *BO) mainFunction() string {
 	code.WriteString("    ax.set_title('Bayesian Optimization Convergence', fontsize=14, fontweight='bold', pad=20)\n")
 	code.WriteString("    ax.grid(True, alpha=0.3, linestyle='--')\n")
 	code.WriteString("    \n")
-	code.WriteString("    def update_frame(frame):\n")
-	code.WriteString("        line.set_data(range(1, frame + 2), best_vals[:frame + 1])\n")
-	code.WriteString("        return line,\n")
-	code.WriteString("    \n")
-	code.WriteString("    ani = animation.FuncAnimation(fig, update_frame, frames=len(best_vals), blit=True, repeat=False)\n")
-	code.WriteString("    ani.save(f'{rootPath}/convergence.gif', writer='pillow', fps=10)\n")
+	code.WriteString("    plt.tight_layout()\n")
+	code.WriteString("    plt.savefig(f'{rootPath}/convergence.png', dpi=150, bbox_inches='tight')\n")
 	code.WriteString("    plt.close()\n\n")
 
 	// Save results
@@ -570,7 +565,7 @@ func (bo *BO) mainFunction() string {
 		code.WriteString("\n    print(f'\\nResults saved to:')\n")
 		code.WriteString("    print(f'  - {rootPath}/logbook.txt')\n")
 		code.WriteString("    print(f'  - {rootPath}/best.txt')\n")
-		code.WriteString("    print(f'  - {rootPath}/convergence.gif\\n')\n")
+		code.WriteString("    print(f'  - {rootPath}/convergence.png\\n')\n")
 	}
 
 	code.WriteString("\n")
